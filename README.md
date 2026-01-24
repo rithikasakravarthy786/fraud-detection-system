@@ -1,80 +1,90 @@
-# Course Registration System
+Hi, I am working on a Spring Boot Fraud Detection & Monitoring System project.
 
-## About the Project
-This is a full-stack Course Registration System developed using Spring Boot for the backend and HTML, CSS, and JavaScript for the frontend.  
-The main goal of this project is to allow users to view available courses, register for courses, and manage enrollments through a simple web-based interface.
+Tech stack:
+- Java, Spring Boot, Spring Data JPA
+- MySQL, Maven, REST APIs
+- Postman
 
-This project helped me gain hands-on experience in full-stack development, REST API integration, database design, and frontend–backend communication.
+Project features already implemented:
 
----
+1) Core Entities:
+- User
+- Account
+- Transaction (with riskScore field)
+- FraudAlert
 
-## Technologies Used
+2) APIs:
+- Auth APIs: register, login
+- Transaction APIs: deposit, withdraw, transfer
+- Admin APIs: view frauds, block account, unblock account, dashboard
 
-### Backend
-- Java
-- Spring Boot
-- Spring Data JPA
-- REST APIs
-- MySQL
-- Maven
+3) Fraud Detection System:
+- Multi-rule fraud detection:
+  - High amount transaction (>50000)
+  - Multiple transactions within 1 minute
+  - Daily transaction limit exceeded (>100000)
+- FraudResult class used to calculate:
+  - fraud flag (true/false)
+  - reason
+  - riskScore
 
-### Frontend
-- HTML
-- CSS
-- JavaScript
+4) Risk Score System:
+- riskScore stored in DB (transaction table)
+- riskScore calculated using fraud rules
+- riskScore column added in MySQL
+- Transaction entity has:
+  @Column(name="risk_score")
+  private int riskScore;
 
----
+5) Auto Account Block Feature:
+- If fraud transactions >= 3 for an account → account auto blocked
+- Logic implemented in TransactionService
+- Blocked accounts cannot perform transactions
 
-## Key Features
-- Display available courses to users
-- User registration and course enrollment
-- Backend REST APIs for course and enrollment management
-- Frontend integration using JavaScript
-- Clean layered architecture (Controller, Service, Repository)
-- Data persistence using MySQL
+6) Admin Unblock Feature:
+- API: PUT /admin/unblock/{accountNumber}
+- Admin can manually unblock blocked accounts
 
----
+7) Admin Dashboard API:
+- API: GET /admin/dashboard
+- Returns:
+  - totalUsers
+  - totalAccounts
+  - totalTransactions
+  - fraudTransactions
+  - blockedAccounts
 
-## Application Logic
-A course registration flow works as follows:
-- Available courses are fetched from the backend and displayed on the frontend
-- Users select and register for courses
-- Frontend sends requests to backend REST APIs
-- Backend validates and processes the enrollment
-- Enrollment details are stored in the database and returned as a response
+8) Global Exception Handling:
+- GlobalExceptionHandler class created
+- Handles AccountBlockedException and general exceptions
+- Avoids 500 Internal Server Error
+- Returns proper error messages
 
----
+9) TransactionService:
+- saveTransaction() method includes:
+  - save transaction
+  - calculate fraud rules
+  - set riskScore
+  - set fraud flag
+  - create FraudAlert
+  - auto block account
+  - save final transaction
 
-## Database Design
-The application uses the following tables:
-- users
-- courses
-- enrollments
+10) TransactionRepository methods:
+- countByAccountIdAndFraudTrue(Long accountId)
+- countByFraudTrue()
+- findByAccountIdAndTimestampAfter(...)
+- findByAccountIdAndTimestampBetween(...)
 
-These tables are connected using proper JPA relationships to ensure data consistency.
+11) AccountRepository methods:
+- findByAccountNumber(String accountNumber)
+- countByBlockedTrue()
 
----
+12) Current status:
+- riskScore working correctly
+- auto block working
+- admin unblock working
+- dashboard working
+- proper error messages working
 
-## API Endpoints
-
-### Course APIs
-- GET /courses – Fetch all available courses
-- POST /courses – Add a new course
-
-### Enrollment APIs
-- POST /enroll – Enroll a user in a course
-- GET /enrollments/{userId} – View enrolled courses for a user
-
-
----
-
-## Learning Outcome
-Through this project, I learned:
-- How to build full-stack applications using Spring Boot
-- How to design and consume RESTful APIs
-- How frontend and backend communicate using HTTP and JSON
-- How to structure a Spring Boot project properly
-- How to use Git and GitHub for version control
-
-
-
+I want to continue improving this fraud detection system with more advanced features, clean architecture, and professional-level enhancements.
