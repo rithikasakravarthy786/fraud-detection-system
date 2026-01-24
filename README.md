@@ -1,90 +1,91 @@
-Hi, I am working on a Spring Boot Fraud Detection & Monitoring System project.
+# Fraud Detection & Monitoring System
 
-Tech stack:
-- Java, Spring Boot, Spring Data JPA
-- MySQL, Maven, REST APIs
+## About the Project
+This is a backend application developed using Spring Boot to simulate a simple fraud detection system for financial transactions.  
+The main goal of this project is to identify suspicious transactions using rule-based logic and allow administrators to monitor and control fraudulent activities.
+
+This project helped me gain hands-on experience in backend development, REST API design, database integration, and real-world problem solving using Java and Spring Boot.
+
+---
+
+## Technologies Used
+- Java
+- Spring Boot
+- Spring Data JPA
+- REST APIs
+- MySQL
+- Maven
 - Postman
 
-Project features already implemented:
+---
 
-1) Core Entities:
-- User
-- Account
-- Transaction (with riskScore field)
-- FraudAlert
+## Key Features
+- User registration and login
+- Account creation for users
+- Deposit, withdraw, and transfer transactions
+- Automatic fraud detection for high-value transactions
+- Fraud alert generation and storage
+- Admin module to view fraud alerts
+- Ability to block suspicious accounts
 
-2) APIs:
-- Auth APIs: register, login
-- Transaction APIs: deposit, withdraw, transfer
-- Admin APIs: view frauds, block account, unblock account, dashboard
+---
 
-3) Fraud Detection System:
-- Multi-rule fraud detection:
-  - High amount transaction (>50000)
-  - Multiple transactions within 1 minute
-  - Daily transaction limit exceeded (>100000)
-- FraudResult class used to calculate:
-  - fraud flag (true/false)
-  - reason
-  - riskScore
+## Fraud Detection Logic
+A transaction is marked as fraudulent when:
+- The transaction amount exceeds a predefined threshold (example: greater than 50,000)
 
-4) Risk Score System:
-- riskScore stored in DB (transaction table)
-- riskScore calculated using fraud rules
-- riskScore column added in MySQL
-- Transaction entity has:
-  @Column(name="risk_score")
-  private int riskScore;
+When fraud is detected:
+- The transaction is flagged
+- A fraud alert is generated and stored in the database
+- Admin can review the alert and take action
 
-5) Auto Account Block Feature:
-- If fraud transactions >= 3 for an account → account auto blocked
-- Logic implemented in TransactionService
-- Blocked accounts cannot perform transactions
+---
 
-6) Admin Unblock Feature:
-- API: PUT /admin/unblock/{accountNumber}
-- Admin can manually unblock blocked accounts
+## Database Design
+The application uses the following tables:
+- users
+- account
+- transaction
+- fraud_alert
 
-7) Admin Dashboard API:
-- API: GET /admin/dashboard
-- Returns:
-  - totalUsers
-  - totalAccounts
-  - totalTransactions
-  - fraudTransactions
-  - blockedAccounts
+---
 
-8) Global Exception Handling:
-- GlobalExceptionHandler class created
-- Handles AccountBlockedException and general exceptions
-- Avoids 500 Internal Server Error
-- Returns proper error messages
+## API Endpoints
 
-9) TransactionService:
-- saveTransaction() method includes:
-  - save transaction
-  - calculate fraud rules
-  - set riskScore
-  - set fraud flag
-  - create FraudAlert
-  - auto block account
-  - save final transaction
+### Authentication APIs
+- POST `/auth/register`
+- POST `/auth/login`
 
-10) TransactionRepository methods:
-- countByAccountIdAndFraudTrue(Long accountId)
-- countByFraudTrue()
-- findByAccountIdAndTimestampAfter(...)
-- findByAccountIdAndTimestampBetween(...)
+### Account APIs
+- POST `/account/create/{userId}`
 
-11) AccountRepository methods:
-- findByAccountNumber(String accountNumber)
-- countByBlockedTrue()
+### Transaction APIs
+- POST `/transaction/deposit`
+- POST `/transaction/withdraw`
+- POST `/transaction/transfer`
 
-12) Current status:
-- riskScore working correctly
-- auto block working
-- admin unblock working
-- dashboard working
-- proper error messages working
+### Admin APIs
+- GET `/admin/frauds`
+- PUT `/admin/block/{accountNumber}`
 
-I want to continue improving this fraud detection system with more advanced features, clean architecture, and professional-level enhancements.
+---
+
+## How to Run the Project
+1. Clone the repository from GitHub
+2. Create a MySQL database (example: `fraud_db`)
+3. Update database credentials in `application.properties`
+4. Run the application using an IDE or `mvn spring-boot:run`
+5. Test the APIs using Postman
+
+---
+
+## Learning Outcome
+Through this project, I learned:
+- How to build RESTful APIs using Spring Boot
+- How to design layered architecture
+- How to use JPA and Hibernate
+- How fraud detection works in real-world systems
+- How to debug backend issues
+
+
+
